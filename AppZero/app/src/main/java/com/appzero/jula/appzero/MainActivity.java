@@ -1,24 +1,12 @@
 package com.appzero.jula.appzero;
 
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.view.View;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,13 +15,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 
-public class MainActivity extends AppCompatActivity {
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,49 +26,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     public void getUrl(View v) {
-
-        BufferedReader buffer = null;
-        String response = "";
-        HttpURLConnection myURLConnection = null;
-        //TextView tv1 = (TextView) findViewById(R.id.textView);
-        EditText url_ = (EditText)findViewById(R.id.url1);
-        String newUrl = url_.getText().toString();
-        InputStream in = null;
-
-
 
 
         final MainActivity a = this;
+        // Using Thread now to do the process in the background
+        // Prevents that the app is frozen when loading stuff
+
         Thread th = new Thread(new Runnable() {
             @Override
             public void run() {
                 //open connection using urlconnection and build the string from inputstream
 
-
-                HttpURLConnection myURLConnection = null;
-                //TextView tv1 = (TextView) findViewById(R.id.textView);
                 EditText url_ = (EditText) findViewById(R.id.url1);
                 String newUrl = url_.getText().toString();
                 String total = null;
 
 
                 try {
+                    //Used webpages for the code block below:
+                    //http://stackoverflow.com/questions/3961589/android-webview-and-loaddata
+                    //http://stackoverflow.com/questions/8654876/http-get-using-android-httpurlconnection
+                    //http://stackoverflow.com/questions/2492076/android-reading-from-an-input-stream-efficiently
 
 
                     URL myURL = new URL(newUrl);
-
-                    myURLConnection = (HttpURLConnection) myURL.openConnection();
+                    HttpURLConnection myURLConnection = (HttpURLConnection) myURL.openConnection();
                     InputStream in = myURLConnection.getInputStream();
                     BufferedReader r = new BufferedReader(new InputStreamReader(in));
                     total = new String();
                     String line;
                     while ((line = r.readLine()) != null) {
-                        total+=line;
+                        total += line;
                     }
-
-
                 }
                 catch (MalformedURLException e) {
 
@@ -113,5 +86,5 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        }
+    }
 }
