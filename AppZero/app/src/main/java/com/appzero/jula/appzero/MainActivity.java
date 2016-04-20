@@ -15,9 +15,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 
-
 public class MainActivity extends AppCompatActivity {
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +29,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         final MainActivity a = this;
+
         // Using Thread now to do the process in the background
         // Prevents that the app is frozen when loading stuff
+
+
 
         Thread th = new Thread(new Runnable() {
             @Override
@@ -40,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
                 EditText url_ = (EditText) findViewById(R.id.url1);
                 String newUrl = url_.getText().toString();
-                String total = null;
+                String total = new String();
+
 
 
                 try {
@@ -48,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
                     //http://stackoverflow.com/questions/3961589/android-webview-and-loaddata
                     //http://stackoverflow.com/questions/8654876/http-get-using-android-httpurlconnection
                     //http://stackoverflow.com/questions/2492076/android-reading-from-an-input-stream-efficiently
-
 
                     URL myURL = new URL(newUrl);
                     HttpURLConnection myURLConnection = (HttpURLConnection) myURL.openConnection();
@@ -62,11 +64,21 @@ public class MainActivity extends AppCompatActivity {
                 }
                 catch (MalformedURLException e) {
 
-                    Toast.makeText(getApplicationContext(), "Connection fault: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                    a.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Connection fault! Invalid Url!", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
                 catch (IOException e) {
 
-                    Toast.makeText(getApplicationContext(), "Cannot open url: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                    a.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Cannot open url! Check your connection or spelling!", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
 
                 final String test = total;
@@ -80,11 +92,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
+
         });
 
         th.start();
-
-
 
     }
 }
