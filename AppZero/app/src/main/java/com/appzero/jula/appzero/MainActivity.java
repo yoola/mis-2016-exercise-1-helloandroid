@@ -1,8 +1,10 @@
 package com.appzero.jula.appzero;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -25,11 +27,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public static void hideSoftKeyboard(Activity activity) {
+        // http://developer.android.com/reference/android/view/inputmethod/InputMethodManager.html
+        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
 
     public void getUrl(View v) {
 
 
         final MainActivity a = this;
+        hideSoftKeyboard(a);
         // Using Thread now to do the process in the background
         // Prevents that the app is frozen when loading stuff
 
@@ -43,13 +51,13 @@ public class MainActivity extends AppCompatActivity {
                 String total = null;
 
 
-                try {
-                    //Used webpages for the code block below:
-                    //http://stackoverflow.com/questions/3961589/android-webview-and-loaddata
-                    //http://stackoverflow.com/questions/8654876/http-get-using-android-httpurlconnection
-                    //http://stackoverflow.com/questions/2492076/android-reading-from-an-input-stream-efficiently
 
+                //Used webpages for the code block below:
+                //http://stackoverflow.com/questions/3961589/android-webview-and-loaddata
+                //http://stackoverflow.com/questions/8654876/http-get-using-android-httpurlconnection
+                //http://stackoverflow.com/questions/2492076/android-reading-from-an-input-stream-efficiently
 
+                try{
                     URL myURL = new URL(newUrl);
                     HttpURLConnection myURLConnection = (HttpURLConnection) myURL.openConnection();
                     InputStream in = myURLConnection.getInputStream();
@@ -61,14 +69,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 catch (MalformedURLException e) {
-
-                    Toast.makeText(getApplicationContext(), "Connection fault: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                    System.out.println("Malformed URL: " + e.getMessage());
+                    //Toast.makeText(getApplicationContext(), "Malformed URL: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
                 catch (IOException e) {
-
-                    Toast.makeText(getApplicationContext(), "Cannot open url: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                    System.out.println("IOExeption, Could not open connection: " + e.getMessage());
+                    //Toast.makeText(getApplicationContext(), "Cannot open url: "+e.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
+                // display t web page
                 final String test = total;
 
                 a.runOnUiThread(new Runnable() {
